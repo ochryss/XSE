@@ -1,4 +1,5 @@
 #include "Renderer.h"
+#include "Math/Vector2.h"
 #include "core/Window.h"
 #include "SDL3/SDL_render.h"
 #include <cassert>
@@ -6,14 +7,16 @@
 namespace xse {
     Window* Renderer::m_Window = nullptr;
     SDL_Renderer* Renderer::m_Handle = nullptr;
-    Color Renderer::m_ClearColor = {40,40,40};
+    RendererConfig Renderer::m_Config{};
 
-    void Renderer::Initialize(Window* window) {
+    void Renderer::Initialize(Window* window, const RendererConfig& config) {
         m_Handle = SDL_CreateRenderer(&window->GetHandle(), NULL);
         assert(m_Handle);
 
+        m_Config = config;
+
         SDL_SetRenderLogicalPresentation(m_Handle,
-            m_LogicalSize.x, m_LogicalSize.y,
+            m_Config.logicalSize.x, m_Config.logicalSize.y,
             SDL_LOGICAL_PRESENTATION_LETTERBOX
         );
     }
@@ -33,12 +36,21 @@ namespace xse {
     }
 
     void Renderer::SetClearColor(Color color) {
-        m_ClearColor = color;
+        m_Config.clearColor = color;
     }
 
     void Renderer::Clear() {
-        SetDrawColor(m_ClearColor);
+        SetDrawColor(m_Config.clearColor);
         SDL_RenderClear(m_Handle);
+    }
+
+    void Renderer::SetLogicalSize(Vector2 size) {
+        m_Config.logicalSize = size;
+        SDL_SetRenderLogicalPresentation(m_Handle, size.x, size.y, SDL_LOGICAL_PRESENTATION_LETTERBOX);
+    }
+
+    Vector2 Renderer::GetLogicalSize() {
+        return m_Config.logicalSize;
     }
 
     void Renderer::DrawLine(Vector2 from, Vector2 to) {

@@ -34,7 +34,6 @@ namespace xse {
             void Initialize();
             void Terminate();
 
-            // TODO
             void HandleEvent();
 
             inline Window& GetWindow() const { return *m_Window; }

@@ -6,24 +6,29 @@
 
 namespace xse {
     class Window;
+    struct RendererConfig {
+        Vector2 logicalSize{320, 180};
+        Color clearColor{40, 40, 40};
+    };
 
     class Renderer {
         private:
             static Window* m_Window;
             static SDL_Renderer* m_Handle;
 
-            static Color m_ClearColor;
-
-            static inline Vector2 m_LogicalSize{320, 180};
+            static RendererConfig m_Config;
 
             static void SetDrawColor(Color color);
         public:
-            static void Initialize(Window* window);
+            static void Initialize(Window* window, const RendererConfig& config);
             static void Terminate();
 
             static void Present();
             static void SetClearColor(Color color);
             static void Clear();
+
+            static void SetLogicalSize(Vector2 size);
+            static Vector2 GetLogicalSize();
 
             static void DrawLine(Vector2 from, Vector2 to);
             static void DrawDebug(Vector2 pos, std::string text);

@@ -6,7 +6,9 @@ file(GLOB_RECURSE SOURCES
     "${CMAKE_CURRENT_SOURCE_DIR}/*.c*"
 )
 
-add_library(XSE_SDK STATIC ${SOURCES})
+add_library(XSE_SDK STATIC
+    ${SOURCES}
+)
 
 #target_sources(XSE_SDK PRIVATE ${SOURCES})
 

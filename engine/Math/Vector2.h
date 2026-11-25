@@ -23,7 +23,7 @@ namespace xse {
             return *this / 2;
         }
 
-        BaseVector2 normalized() const {
+        BaseVector2 Normalized() const {
             assert(x != 0 || y != 0);
             float len = Length();
             if (len > 0.0f) { return *this / len; }
@@ -31,15 +31,15 @@ namespace xse {
             return {0.0f, 0.0f};
         }
 
-        constexpr float dot(const BaseVector2& other) const {
+        constexpr float Dot(const BaseVector2& other) const {
             return x * other.x + y * other.y;
         }
 
-        float distance(const BaseVector2& other) const {
+        float Distance(const BaseVector2& other) const {
             return (*this - other).Length();
         }
 
-        constexpr float distanceSq(const BaseVector2& other) const {
+        constexpr float DistanceSq(const BaseVector2& other) const {
             return (*this - other).LengthSq();
         }
 

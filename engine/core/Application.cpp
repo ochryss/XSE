@@ -1,4 +1,5 @@
 #include "Application.h"
+#include "Math/Vector2.h"
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_timer.h"
 #include "Window.h"
@@ -19,10 +20,12 @@ namespace xse {
 
         m_Window->Initialize();
         m_Window->SetEventCallback([this](SDL_Event& event) {
-            // TODO
+            HandleEvent();
         });
 
-        Renderer::Initialize(m_Window);
+        Renderer::Initialize(m_Window, {
+            .logicalSize = Vector2(m_Specification.logicalWidth, m_Specification.logicalHeight)
+        });
     }
 
     Application::~Application() {

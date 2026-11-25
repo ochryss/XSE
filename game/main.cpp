@@ -1,3 +1,4 @@
+#include "Math/Vector2.h"
 #include "XSE.h"
 #include <cmath>
 #include <iostream>
@@ -5,7 +6,6 @@
 
 class GameTest : public xse::Application {
     private:
-        float m_FixedTPS = 1.0f/15;
         float m_Angle = 0;
 
         int m_BaseOffsetDir = 15, m_OffsetDir = m_BaseOffsetDir;
@@ -27,11 +27,11 @@ class GameTest : public xse::Application {
         }
         
         void OnUpdate(float deltaTime) override {
-            xse::Vector2 screenCenter = {160-m_Center.x, 90-m_Center.y};
+            xse::Vector2 screenCenter = xse::Vector2(160, 90) - m_Center;
             float x = std::cos(m_Angle) * m_Offset;
             float y = std::sin(m_Angle) * m_Offset;
 
-            m_Position = {x + screenCenter.x, y + screenCenter.y};
+            m_Position = xse::Vector2(x, y) + screenCenter;
             m_Offset += m_OffsetDir * deltaTime;
             if (m_Offset >= screenCenter.y || m_Offset <= m_BaseOffsetDir)
                 m_OffsetDir *= -1;
@@ -41,7 +41,7 @@ class GameTest : public xse::Application {
         }
 
         void OnRender(float deltaTime) override {
-            xse::Renderer::DrawDebug({0, 0}, "Position: " + std::to_string(m_Position.x) + ", " + std::to_string(m_Position.y));
+            xse::Renderer::DrawDebug({0, 0}, "Position: " + m_Position.ToString());
             xse::Renderer::DrawDebug({0, 10}, "Angle: " + std::to_string(m_Angle));
             xse::Renderer::DrawDebug({0, 20}, "Offset: " + std::to_string(m_Offset) + " | Dir: " + (m_OffsetDir > 0 ? "out" : "in"));
             xse::Renderer::DrawDebug({0, 40}, "FPS: " + std::to_string((int)(1/deltaTime)));

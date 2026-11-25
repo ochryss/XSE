@@ -36,6 +36,9 @@ namespace xse {
     void Window::ProcessEvents() {
         SDL_Event event;
         SDL_PollEvent(&event);
+
+        // TODO(Event Translation)
+        GetEventCallback()(event);
     }
 
     void Window::SetTitle(const std::string &title) {
