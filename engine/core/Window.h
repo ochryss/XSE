@@ -34,5 +34,7 @@ namespace xse {
 
             void SetTitle(const std::string& title);
             const std::string GetTitle();
+
+            inline SDL_Window& GetHandle() { return *m_Handle; };
     };
 }

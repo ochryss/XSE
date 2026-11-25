@@ -2,6 +2,8 @@
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_timer.h"
 #include "Window.h"
+#include "graphics/Renderer.h"
+#include <algorithm>
 
 namespace xse {
     Application* Application::s_Instance = nullptr;
@@ -19,9 +21,12 @@ namespace xse {
         m_Window->SetEventCallback([this](SDL_Event& event) {
             // TODO
         });
+
+        Renderer::Initialize(m_Window);
     }
 
     Application::~Application() {
+        Renderer::Terminate();
         m_Window->Terminate();
         s_Instance = nullptr;
     }
@@ -29,16 +34,20 @@ namespace xse {
     void Application::Initialize() {
         OnInitialization();
 
-        float deltaTime = 0.0f,
-            lastTime = SDL_GetTicks() / 1000.0f;
+        const double frequency = static_cast<double>(SDL_GetPerformanceFrequency());
+        double lastTime = static_cast<double>(SDL_GetPerformanceCounter()) / frequency;
 
         while (!m_IsTerminated) {
             m_Window->ProcessEvents();
+            
+            const double currentTime = static_cast<double>(SDL_GetPerformanceCounter()) / frequency;
+            float deltaTime = static_cast<float>(currentTime - lastTime);
+            lastTime = currentTime;
+            // Avoid physics malfunction on stutters/low framerate
+            // Effectively freezes instead of compensating for high mspf (ms per frame)
+            deltaTime = std::min(deltaTime, 1.0f / 60.0f);
 
-            float currentTime = SDL_GetTicks() / 1000.0f;
-            deltaTime = currentTime - lastTime, lastTime = currentTime;
-
-            // TODO(Renderer Clear)
+            Renderer::Clear();
 
             // TODO(Update)
             OnUpdate(deltaTime);
@@ -46,7 +55,7 @@ namespace xse {
             // TODO(Render)
             OnRender(deltaTime);
 
-            // TODO(Renderer Present)
+            Renderer::Present();
         }
     }
 
