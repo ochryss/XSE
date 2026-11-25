@@ -1,12 +1,10 @@
 #pragma once
+#include "Math/Vector2.h"
+#include "Math/Color.h"
 #include "SDL3/SDL_render.h"
 #include <string>
 
 namespace xse {
-    // Temp
-    struct Color { int r, g, b, a = 255; };
-    struct Vector2 { float x, y; };
-
     class Window;
 
     class Renderer {
@@ -20,7 +18,7 @@ namespace xse {
 
             static void SetDrawColor(Color color);
         public:
-            static void Initialize(Window* window/*int logicalWidth, int logicalHeight*/);
+            static void Initialize(Window* window);
             static void Terminate();
 
             static void Present();

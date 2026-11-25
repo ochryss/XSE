@@ -1,5 +1,4 @@
-#include "graphics/Renderer.h"
-#include "xse.h"
+#include "XSE.h"
 #include <cmath>
 #include <iostream>
 #include <string>
@@ -14,7 +13,7 @@ class GameTest : public xse::Application {
 
         xse::Vector2 m_Position {0, 0};
         xse::Vector2 m_Size {16, 16};
-        xse::Vector2 m_Center { m_Size.x/2, m_Size.y/2 };
+        xse::Vector2 m_Center = m_Size.GetCenter();
     public:
         GameTest(xse::ApplicationSpecification spec) : xse::Application(spec) {}
         ~GameTest() {}
