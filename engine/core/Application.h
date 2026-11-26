@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <string>
 
 namespace xse {
@@ -12,6 +13,7 @@ namespace xse {
     };
 
     class Window;
+    class Event;
 
     class Application {
         private:
@@ -21,7 +23,7 @@ namespace xse {
             Window* m_Window = nullptr;
 
             ApplicationSpecification m_Specification;
-        
+            /*int*/float m_TimeScale = 1;
         public:
             Application(const ApplicationSpecification& spec);
             virtual ~Application();
@@ -30,11 +32,15 @@ namespace xse {
             virtual void OnTermination() {}
             virtual void OnUpdate(float deltaTime) {}
             virtual void OnRender(float deltaTime) {}
+            virtual void OnEvent(Event& event) {}
 
             void Initialize();
             void Terminate();
 
-            void HandleEvent();
+            void HandleEvent(Event& event);
+
+            void SetTimeScale(float timeScale) { this->m_TimeScale = std::max(timeScale, 0.0f); }
+            float GetTimeScale() const { return m_TimeScale; }
 
             inline Window& GetWindow() const { return *m_Window; }
             static Application& Get() { return *s_Instance; }

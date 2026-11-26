@@ -1,8 +1,13 @@
 #include "Window.h"
+#include "Input/KeyCode.h"
 #include "SDL3/SDL_events.h"
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_rect.h"
 #include "SDL3/SDL_video.h"
+
+#include "Event/Event.h"
+#include "Event/KeyboardEvent.h"
+
 #include <cassert>
 
 namespace xse {
@@ -34,11 +39,29 @@ namespace xse {
     }
 
     void Window::ProcessEvents() {
-        SDL_Event event;
-        SDL_PollEvent(&event);
+        SDL_Event rawEvent;
+        while (SDL_PollEvent(&rawEvent)) {
+            switch (rawEvent.type) {
+                case SDL_EVENT_KEY_DOWN: {
+                    KeyCode key = static_cast<KeyCode>(rawEvent.key.scancode);
+                    auto event = KeyPressEvent(key, rawEvent.key.repeat);
 
-        // TODO(Event Translation)
-        GetEventCallback()(event);
+                    GetEventCallback()(event);
+                    break;
+                }
+
+                case SDL_EVENT_KEY_UP: {
+                    KeyCode key = static_cast<KeyCode>(rawEvent.key.scancode);
+                    auto event = KeyReleaseEvent(key, rawEvent.key.repeat);
+
+                    GetEventCallback()(event);
+                    break;
+                }
+
+                default:
+                    break;
+            }
+        }
     }
 
     void Window::SetTitle(const std::string &title) {

@@ -1,9 +1,9 @@
 #include "Application.h"
 #include "Math/Vector2.h"
-#include "SDL3/SDL_events.h"
 #include "SDL3/SDL_timer.h"
 #include "Window.h"
-#include "graphics/Renderer.h"
+#include "Graphics/Renderer.h"
+#include "Input/Input.h"
 #include <algorithm>
 
 namespace xse {
@@ -19,8 +19,8 @@ namespace xse {
         });
 
         m_Window->Initialize();
-        m_Window->SetEventCallback([this](SDL_Event& event) {
-            HandleEvent();
+        m_Window->SetEventCallback([this](Event& event) {
+            HandleEvent(event);
         });
 
         Renderer::Initialize(m_Window, {
@@ -41,6 +41,7 @@ namespace xse {
         double lastTime = static_cast<double>(SDL_GetPerformanceCounter()) / frequency;
 
         while (!m_IsTerminated) {
+            Input::BeginFrame();
             m_Window->ProcessEvents();
             
             const double currentTime = static_cast<double>(SDL_GetPerformanceCounter()) / frequency;
@@ -49,13 +50,12 @@ namespace xse {
             // Avoid physics malfunction on stutters/low framerate
             // Effectively freezes instead of compensating for high mspf (ms per frame)
             deltaTime = std::min(deltaTime, 1.0f / 60.0f);
+            
+            deltaTime *= m_TimeScale;
 
             Renderer::Clear();
 
-            // TODO(Update)
             OnUpdate(deltaTime);
-
-            // TODO(Render)
             OnRender(deltaTime);
 
             Renderer::Present();
@@ -68,5 +68,8 @@ namespace xse {
         OnTermination();
     }
 
-    void Application::HandleEvent() {}
+    void Application::HandleEvent(Event& event) {
+        Input::OnEvent(event);
+        this->OnEvent(event);
+    }
 }

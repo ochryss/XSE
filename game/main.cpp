@@ -1,21 +1,22 @@
-#include "Math/Vector2.h"
 #include "XSE.h"
 #include <cmath>
 #include <iostream>
 #include <string>
 
-class GameTest : public xse::Application {
+using namespace xse;
+
+class GameTest : public Application {
     private:
         float m_Angle = 0;
 
         int m_BaseOffsetDir = 15, m_OffsetDir = m_BaseOffsetDir;
         float m_Offset = m_BaseOffsetDir;
 
-        xse::Vector2 m_Position {0, 0};
-        xse::Vector2 m_Size {16, 16};
-        xse::Vector2 m_Center = m_Size.GetCenter();
+        Vector2 m_Position {0, 0};
+        Vector2 m_Size {16, 16};
+        Vector2 m_Center = m_Size.GetCenter();
     public:
-        GameTest(xse::ApplicationSpecification spec) : xse::Application(spec) {}
+        GameTest(ApplicationSpecification spec) : Application(spec) {}
         ~GameTest() {}
 
         void OnInitialization() override {
@@ -27,31 +28,80 @@ class GameTest : public xse::Application {
         }
         
         void OnUpdate(float deltaTime) override {
-            xse::Vector2 screenCenter = xse::Vector2(160, 90) - m_Center;
+            Vector2 screenCenter = Vector2(160, 90) - m_Center;
             float x = std::cos(m_Angle) * m_Offset;
             float y = std::sin(m_Angle) * m_Offset;
 
-            m_Position = xse::Vector2(x, y) + screenCenter;
+            m_Position = Vector2(x, y) + screenCenter;
             m_Offset += m_OffsetDir * deltaTime;
-            if (m_Offset >= screenCenter.y || m_Offset <= m_BaseOffsetDir)
-                m_OffsetDir *= -1;
+
+            if (m_Offset >= screenCenter.y) m_OffsetDir = -m_BaseOffsetDir;
+            if (m_Offset <= m_BaseOffsetDir) m_OffsetDir = m_BaseOffsetDir;
 
             m_Angle += deltaTime*5;
             if (m_Angle >= 6.28) m_Angle = 0;
+
+            HandleTimeControl(deltaTime);
+        }
+
+        // State-driven Input Test
+        void HandleTimeControl(float deltaTime) {
+            float timeScale = GetTimeScale();
+            if (timeScale == 0) return;
+
+            if (Input::IsKeyPressed(KeyCode::Up)) {
+                timeScale += deltaTime / timeScale;
+            }
+
+            if (Input::WasKeyPressed(KeyCode::Right)) {
+                timeScale += 5;
+            }
+
+            if (Input::WasKeyPressed(KeyCode::Left)) {
+                timeScale -= 5;
+            }
+
+            if (Input::IsKeyPressed(KeyCode::Down)) {
+                timeScale -= deltaTime / timeScale;
+            }
+
+            SetTimeScale(timeScale);
+        }
+
+        // Event-driven Input test
+        void OnEvent(Event &event) override {
+            switch (event.GetEventType()) {
+                case EventType::KEY_PRESS: {
+                    KeyCode key = static_cast<KeyPressEvent&>(event).GetKey();
+                    int timeScale = GetTimeScale();
+                    // Yes, i use switch A LOT, cry about it.
+                    switch (key) {
+                        case KeyCode::Enter: {SetTimeScale(timeScale == 0 ? 1 : 0); break;}
+                        case KeyCode::Escape: {Terminate(); break;}
+                        default: break;
+                    }
+
+                    std::cout << "Key pressed: " + std::to_string((int)key) << std::endl;
+                }
+
+                default:
+                    break;
+            }
         }
 
         void OnRender(float deltaTime) override {
-            xse::Renderer::DrawDebug({0, 0}, "Position: " + m_Position.ToString());
-            xse::Renderer::DrawDebug({0, 10}, "Angle: " + std::to_string(m_Angle));
-            xse::Renderer::DrawDebug({0, 20}, "Offset: " + std::to_string(m_Offset) + " | Dir: " + (m_OffsetDir > 0 ? "out" : "in"));
-            xse::Renderer::DrawDebug({0, 40}, "FPS: " + std::to_string((int)(1/deltaTime)));
-            xse::Renderer::DrawDebug({0, 50}, "MsPF: " + std::to_string(std::round(deltaTime*1000)));
+            Renderer::DrawDebug({0, 0}, "Position: " + m_Position.ToString());
+            Renderer::DrawDebug({0, 10}, "Angle: " + std::to_string(m_Angle));
+            Renderer::DrawDebug({0, 20}, "Offset: " + std::to_string(m_Offset) + " | Dir: " + (m_OffsetDir > 0 ? "out" : "in"));
+            Renderer::DrawDebug({0, 40}, "FPS: " + std::to_string((int)(1/deltaTime)));
+            Renderer::DrawDebug({0, 50}, "MsPF: " + std::to_string(std::round(deltaTime*1000)) + "ms");
+            Renderer::DrawDebug({0, 60}, "TimeScale: " + std::to_string(GetTimeScale()) + "x");
 
-            xse::Renderer::DrawRect(m_Position, {16, 16});
+            Renderer::DrawRect(m_Position, {16, 16});
         }
 };
 
-xse::Application* xse::CreateApplication(int argc, char **argv) {
+Application* xse::CreateApplication(int argc, char **argv) {
     return new GameTest({
         .title = "Test"
     });
