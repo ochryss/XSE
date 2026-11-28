@@ -10,7 +10,7 @@ namespace xse {
         private:
             std::vector<Scene*> m_Scenes;
 
-            void SortScenes();
+            void SortScenes(bool ascending);
         public:
             ~SceneManager();
         

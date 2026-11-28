@@ -19,9 +19,13 @@ namespace game {
     }
 
     void GameplayScene::OnRender(float deltaTime) {
-        xse::Renderer::DrawRect(m_PlayerData.position, m_PlayerData.size);
+        xse::Renderer::DrawRect(m_PlayerData.position, m_PlayerData.size, xse::Colors::Red);
     }
 
+    // Test for Event Handling
+    // Resets the player position whenever the player press K.
+    // If the event is handled by UIScene, it doesn't allow it
+    // to take effect.
     void GameplayScene::OnEvent(xse::Event &event) {
         if (event.IsHandled()) return;
 

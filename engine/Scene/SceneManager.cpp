@@ -13,14 +13,17 @@ namespace xse {
     }
 
     // The lower the SortDepth is, the earlier it is updated
-    void SceneManager::SortScenes() {
-        std::stable_sort(m_Scenes.begin(), m_Scenes.end(),[](const Scene* a, const Scene* b) {
-            return a->GetSortDepth() < b->GetSortDepth();
-        });
+    void SceneManager::SortScenes(bool ascending) {
+        std::stable_sort(m_Scenes.begin(), m_Scenes.end(),
+            [ascending](const Scene* a, const Scene* b) {
+                return ascending ? a->GetSortDepth() < b->GetSortDepth()
+                    : a->GetSortDepth() > b->GetSortDepth();
+            }
+        );
     }
 
     void SceneManager::OnUpdate(float deltaTime) {
-        SortScenes();
+        SortScenes(true);
 
         for (Scene* scene : m_Scenes) {
             scene->OnUpdate(deltaTime);
@@ -28,7 +31,7 @@ namespace xse {
     }
 
     void SceneManager::OnRender(float deltaTime) {
-        SortScenes();
+        SortScenes(false);
 
         for (Scene* scene : m_Scenes) {
             scene->OnRender(deltaTime);
@@ -36,7 +39,7 @@ namespace xse {
     }
 
     void SceneManager::OnEvent(Event& event) {
-        SortScenes();
+        SortScenes(true);
 
         for (Scene* scene : m_Scenes) {
             scene->OnEvent(event);

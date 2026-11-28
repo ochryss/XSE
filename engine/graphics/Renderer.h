@@ -30,8 +30,8 @@ namespace xse {
             static void SetLogicalSize(Vector2 size);
             static Vector2 GetLogicalSize();
 
-            static void DrawLine(Vector2 from, Vector2 to);
-            static void DrawDebug(Vector2 pos, std::string text);
-            static void DrawRect(Vector2 pos, Vector2 size);
+            static void DrawLine(Vector2 from, Vector2 to, Color color = Colors::White);
+            static void DrawDebug(Vector2 pos, std::string text, Color color = Colors::White);
+            static void DrawRect(Vector2 pos, Vector2 size, Color color = Colors::White);
     };
 }

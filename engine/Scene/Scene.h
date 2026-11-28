@@ -9,6 +9,8 @@ namespace xse {
             Scene& operator=(const Scene& rhs);
             Scene(const Scene& rhs);
 
+            // Represents Priority on Update or Event actions
+            // and Depth on Render action.
             double m_SortDepth;
         public:
             explicit Scene(double sortDepth = 0.0) : m_SortDepth(sortDepth) {}

@@ -24,6 +24,10 @@ namespace game {
             xse::Renderer::DrawDebug({0, 40}, "TimeScale: " + std::to_string(timeScale) + "x");
     }
 
+    // Test for Event Handling
+    // Handles the Event (which marks it as cancelled) whenever the
+    // player is within bounds, allowing GameplayScene to only consider
+    // the Event when it is not within bounds.
     void UIScene::OnEvent(xse::Event& event) {
         switch (event.GetEventType()) {
             case xse::EventType::KEY_RELEASE: {

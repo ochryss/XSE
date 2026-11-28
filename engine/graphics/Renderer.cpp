@@ -53,16 +53,16 @@ namespace xse {
         return m_Config.logicalSize;
     }
 
-    void Renderer::DrawLine(Vector2 from, Vector2 to) {
-        SetDrawColor({255,255,255});
+    void Renderer::DrawLine(Vector2 from, Vector2 to, Color color) {
+        SetDrawColor(color);
         SDL_RenderLine(m_Handle,
             from.x, from.y,
             to.x, to.y
         );
     }
 
-    void Renderer::DrawDebug(Vector2 pos, std::string text) {
-        SetDrawColor({255,255,255});
+    void Renderer::DrawDebug(Vector2 pos, std::string text, Color color) {
+        SetDrawColor(color);
         SDL_SetRenderScale(m_Handle, 0.45, 0.45);
         SDL_RenderDebugText(m_Handle,
             pos.x, pos.y,
@@ -71,12 +71,12 @@ namespace xse {
         SDL_SetRenderScale(m_Handle, 1, 1);
     }
 
-    void Renderer::DrawRect(Vector2 pos, Vector2 size) {
+    void Renderer::DrawRect(Vector2 pos, Vector2 size, Color color) {
         SDL_FRect rect {
             pos.x, pos.y,
             size.x, size.y
         };
-        SetDrawColor({255,255,255});
+        SetDrawColor(color);
         SDL_RenderFillRect(m_Handle, &rect);
     }
 }
