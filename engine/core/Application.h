@@ -12,6 +12,7 @@ namespace xse {
         bool vsync = false;
     };
 
+    class SceneManager;
     class Window;
     class Event;
 
@@ -21,18 +22,22 @@ namespace xse {
             static Application* s_Instance;
 
             Window* m_Window = nullptr;
+            SceneManager* m_SceneManager = nullptr;
 
             ApplicationSpecification m_Specification;
             /*int*/float m_TimeScale = 1;
-        public:
-            Application(const ApplicationSpecification& spec);
-            virtual ~Application();
 
+        protected:
             virtual void OnInitialization() {}
             virtual void OnTermination() {}
+
             virtual void OnUpdate(float deltaTime) {}
             virtual void OnRender(float deltaTime) {}
             virtual void OnEvent(Event& event) {}
+        
+        public:
+            Application(const ApplicationSpecification& spec);
+            virtual ~Application();
 
             void Initialize();
             void Terminate();
@@ -43,6 +48,7 @@ namespace xse {
             float GetTimeScale() const { return m_TimeScale; }
 
             inline Window& GetWindow() const { return *m_Window; }
+            inline SceneManager& GetSceneManager() const { return *m_SceneManager; }
             static Application& Get() { return *s_Instance; }
     };
 

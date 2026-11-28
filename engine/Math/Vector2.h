@@ -5,7 +5,7 @@
 namespace xse {
     template<typename T>
     struct BaseVector2 {
-        T x, y;
+        T x = 0, y = 0;
 
         std::string ToString() const {
             return std::to_string(x) + ", " + std::to_string(y);

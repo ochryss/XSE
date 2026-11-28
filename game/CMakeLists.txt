@@ -10,6 +10,11 @@ add_executable(TEST_GAME
     ${GAME_SOURCES}
 )
 
+target_include_directories(TEST_GAME
+    PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
 target_link_libraries(TEST_GAME
     PRIVATE
         XSE_SDK

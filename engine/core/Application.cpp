@@ -4,6 +4,8 @@
 #include "Window.h"
 #include "Graphics/Renderer.h"
 #include "Input/Input.h"
+#include "Event/Event.h"
+#include "Scene/SceneManager.h"
 #include <algorithm>
 
 namespace xse {
@@ -22,6 +24,8 @@ namespace xse {
         m_Window->SetEventCallback([this](Event& event) {
             HandleEvent(event);
         });
+
+        m_SceneManager = new SceneManager();
 
         Renderer::Initialize(m_Window, {
             .logicalSize = Vector2(m_Specification.logicalWidth, m_Specification.logicalHeight)
@@ -55,8 +59,15 @@ namespace xse {
 
             Renderer::Clear();
 
+            // Application Update
             OnUpdate(deltaTime);
+            // Scenes Update
+            m_SceneManager->OnUpdate(deltaTime);
+
+            // Application Render
             OnRender(deltaTime);
+            // Scenes Render
+            m_SceneManager->OnRender(deltaTime);
 
             Renderer::Present();
         }
@@ -71,5 +82,7 @@ namespace xse {
     void Application::HandleEvent(Event& event) {
         Input::OnEvent(event);
         this->OnEvent(event);
+
+        m_SceneManager->OnEvent(event);
     }
 }
